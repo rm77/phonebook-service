@@ -1,51 +1,40 @@
-from flask import Flask,request,jsonify,make_response
-from flask_restful import Resource, Api, reqparse
+from concurrent import futures
+import grpc
+import time
+from Phonebook_Model import *
+import phonebook_pb2
+import phonebook_pb2_grpc
 import json
 
 
-from Phonebook_Model import *
-
 phonebook_model = Phonebook_Model()
-application = Flask(__name__)
-api = Api(application)
 
-class Phonebook_Service(Resource):
-    def get_resp(self,pb_data):
-        status = 'ERROR' if pb_data == False else 'OK'
-        http_code = 404 if pb_data == False else 200
-        return status,http_code
-    #read -->
-    def get(self,id=''):
-        if (id==''):
-            #jika parameter id tidak ada, diasumsikan retrieve semua
-            pb_data = phonebook_model.list()
-        else:
-            #jika ada parameter id, ambil data secara spesifik pada id tersebut
-            pb_data = phonebook_model.get(id)
+class Phonebook_Service(phonebook_pb2_grpc.PhonebookServicer):
+    def __init__(self):
+        pass
+    def GetDataById(self, request, context):
+        id = request.key
+        pbdata = phonebook_model.get(id)
+        hasil = dict(data=pbdata)
+        print(id,pbdata)
+        return phonebook_pb2.Response(value=json.dumps(hasil))
+    def GetDataAll(self, request, context):
+        pbdata = phonebook_model.list()
+        for d in pbdata:
+            hasil = dict(id=d,data=pbdata[d])
+            yield phonebook_pb2.Response(value=json.dumps(hasil))
 
-        status, http_code = self.get_resp(pb_data)
-        return dict(status=status,data=pb_data),http_code
-    def post(self):
-        args = request.get_json(force=True)
-        pb_data = phonebook_model.add(args)
-        status, http_code = self.get_resp(pb_data)
-        return dict(status=status,data=pb_data),http_code
-    def delete(self,id=''):
-        if (id==''):
-            pb_data=False
-        else:
-            pb_data = phonebook_model.remove(id)
-        status, http_code = self.get_resp(pb_data)
-        return dict(status=status,data=pb_data),http_code
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    phonebook_pb2_grpc.add_PhonebookServicer_to_server(Phonebook_Service(),server)
+    server.add_insecure_port('[::]:50051')
+    server.start()
+    try:
+        while True:
+            time.sleep(60 * 60 * 24)
+    except KeyboardInterrupt:
+        server.stop(0)
 
-
-
-api.add_resource(Phonebook_Service,'/person','/person/<id>')
-
-
-if __name__ == '__main__':
-    from gevent.pywsgi import WSGIServer
-    http_server = WSGIServer(('',5000),application)
-    http_server.serve_forever()
-
+if __name__=='__main__':
+    serve()
 

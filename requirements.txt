@@ -1,7 +1,4 @@
-flask
-flask_restful
 uuid
 pickledb
-gevent
-
+grpcio-tools
 
