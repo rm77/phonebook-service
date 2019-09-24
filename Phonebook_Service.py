@@ -1,6 +1,7 @@
 from flask import Flask,request,jsonify,make_response
 from flask_restful import Resource, Api, reqparse
 import json
+import os
 
 
 from Phonebook_Model import *
@@ -39,8 +40,14 @@ class Phonebook_Service(Resource):
         return dict(status=status,data=pb_data),http_code
 
 
+class SystemInfo(Resource):
+    def get(self):
+        systemname = os.popen("uname -a").readlines()
+        info =  {'versi': '0.01', 'name': systemname}
+        return dict(info=info), 200
 
 api.add_resource(Phonebook_Service,'/person','/person/<id>')
+api.add_resource(SystemInfo,'/info')
 
 
 if __name__ == '__main__':
