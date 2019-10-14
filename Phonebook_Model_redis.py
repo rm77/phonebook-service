@@ -1,0 +1,51 @@
+import uuid
+from typing import List, Any
+
+import redis
+import json
+
+class Phonebook_Model_redis(object):
+    def __init__(self):
+        self.db = redis.Redis('localhost',port=6379,decode_responses=True)
+        #True ==> untuk bisa disimpan
+    def add(self,p):
+        if not isinstance(p,dict):
+            return False
+        uid = uuid.uuid1()
+        self.db.set(str(uid) ,  json.dumps(p) )
+        return "{}" . format(str(uid))
+    def list(self):
+        hasil = []
+        for x in self.db.keys():
+            hasil.append({x: self.db.get(x)})
+        return hasil
+    def get(self,id):
+        try:
+            return json.loads(self.db.get(id))
+        except:
+            return False
+    def empty(self):
+        try:
+            for x in self.db.keys():
+                #print(x)
+                self.db.delete(x)
+        except:
+            return True
+        return True
+    def remove(self,id):
+        try:
+            self.db.delete(id)
+        except KeyError:
+            return False
+        return True
+
+
+if __name__ == '__main__':
+    #untuk ujicoba model
+    p = Phonebook_Model_redis()
+    p.empty()
+    print(p.list())
+    p.add({'nama': 'Royyana', 'alamat': 'Ketintang', 'telp' : '+62813013'})
+    p.add({'nama': 'Ananda', 'alamat': 'SMP 6 Surabaya', 'telp' : '+62813012'})
+    p.add({'nama': 'Ibrahim', 'alamat': 'TK Perwanida', 'telp' : '+62813011'})
+    print(p.list())

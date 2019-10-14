@@ -4,6 +4,6 @@ flask_restful
 uuid
 pickledb
 gevent
-
+redis
 
 
