@@ -3,9 +3,12 @@ from flask_restful import Resource, Api, reqparse
 import json
 
 
-from Phonebook_Model_redis import *
+#from Phonebook_Model import *
+#phonebook_model = Phonebook_Model()
 
-phonebook_model = Phonebook_Model_redis()
+from Phonebook_Model_redis import *
+phonebook_model = Phonebook_Model()
+
 application = Flask(__name__)
 api = Api(application)
 

@@ -4,7 +4,7 @@ from typing import List, Any
 import redis
 import json
 
-class Phonebook_Model_redis(object):
+class Phonebook_Model(object):
     def __init__(self):
         self.db = redis.Redis('localhost',port=6379,decode_responses=True)
         #True ==> untuk bisa disimpan
@@ -42,7 +42,7 @@ class Phonebook_Model_redis(object):
 
 if __name__ == '__main__':
     #untuk ujicoba model
-    p = Phonebook_Model_redis()
+    p = Phonebook_Model()
     p.empty()
     print(p.list())
     p.add({'nama': 'Royyana', 'alamat': 'Ketintang', 'telp' : '+62813013'})
