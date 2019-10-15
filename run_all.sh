@@ -13,3 +13,4 @@ sudo docker rm -f p3 ; sudo docker run --name p3 -p 9993:5000 --env REDISADDR=${
 sudo docker rm -f p4 ; sudo docker run --name p4 -p 9994:5000 --env REDISADDR=${REDISADDR}  phonebook-docker-2:1.0
 
 # dan seterusnya
+#cek dengan docker ps --all
