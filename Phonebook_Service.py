@@ -1,13 +1,16 @@
 from flask import Flask,request,jsonify,make_response
 from flask_restful import Resource, Api, reqparse
 import json
-
+import os
 
 #from Phonebook_Model import *
 #phonebook_model = Phonebook_Model()
 
 from Phonebook_Model_redis import *
-phonebook_model = Phonebook_Model()
+
+redis_addr = os.getenv("REDISADDR") or "localhost"
+#waktu jalan dalam container akan menggunakan environemtn variable REDISADDR sebagai parameter lokasi redis server
+phonebook_model = Phonebook_Model(address=redis_addr)
 
 application = Flask(__name__)
 api = Api(application)

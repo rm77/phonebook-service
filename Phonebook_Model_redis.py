@@ -4,9 +4,12 @@ from typing import List, Any
 import redis
 import json
 
+
+
 class Phonebook_Model(object):
-    def __init__(self):
-        self.db = redis.Redis('localhost',port=6379,decode_responses=True)
+    def __init__(self,address='localhost'):
+        self.redis_address = address
+        self.db = redis.Redis(self.redis_address,port=6379,decode_responses=True)
         #localhost harus diganti ke ip address yang dibind oleh container redis
         #True ==> untuk bisa disimpan
     def add(self,p):
