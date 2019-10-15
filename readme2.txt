@@ -34,5 +34,10 @@ untuk build lakukan hal yang mirip pada readme.txt
    atau cobalah lakukan curl dari komputer lain
    curl -v http://<ipaddres>:9999/person
 
+   untuk menambah data :
+   curl -v http://localhost:9999/person -XPOST -d '{"nama" : "didin", "alamat": "sukolilo"}'
+
+
+
 
 
