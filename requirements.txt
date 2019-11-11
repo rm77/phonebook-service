@@ -5,5 +5,5 @@ uuid
 pickledb
 gevent
 redis
-
+PyJWT
 
