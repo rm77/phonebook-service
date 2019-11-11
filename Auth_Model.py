@@ -46,6 +46,8 @@ class Auth_Model(object):
 			return Token_Model(data).get_decoded()
 		except jwt.ExpiredSignatureError:
 			return None
+		except jwt.exceptions.InvalidSignatureError:
+			return None
 
 
 if __name__ == '__main__':
@@ -55,6 +57,7 @@ if __name__ == '__main__':
 	token = auth.login('leomessi','kaoskakimerah123')
 	print(token.decode())
 	#time.sleep(10)
+	token='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Imxlb21lc3NpIiwicGFzc3dvcmQiOiJrYW9za2FraW1lcmFoMTIzIiwibmFtYSI6Ikxpb25lbCBNZXNzaSIsImV4cCI6MTU3MzUxNjI5Nn0.KuEO9EPwQ2esSsyFWZ-dn8rKTkp0MAXhIuu3SpigUSg'
 	cek = auth.cek_token(token)
 	print(cek)
 	#cek will be None if token is expired

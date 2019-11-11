@@ -53,7 +53,9 @@ class Phonebook_Service(Resource):
         return status,http_code
     #read -->
     def get(self,id=''):
-        self.auth_cek()
+        if (self.auth_cek() is not None):
+            return self.auth_cek(),404
+
         if (id==''):
             #jika parameter id tidak ada, diasumsikan retrieve semua
             pb_data = phonebook_model.list()
